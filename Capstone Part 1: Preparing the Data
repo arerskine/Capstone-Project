@@ -1,0 +1,6 @@
+# Read in wage data for Los Angeles County for all industry levels (Private and all levels of government)
+income2012 = read.csv("bls data 2013.csv")
+income2013 = read.csv("bls data 2013.csv")
+income2014 = read.csv("bls data 2014.csv")
+income2015 = read.csv("bls data 2015.csv")
+income2016 = read.csv("bls data 2016 1qtr.csv")
