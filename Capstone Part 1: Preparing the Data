@@ -1,6 +1,15 @@
 # Read in wage data for Los Angeles County for all industry levels (Private and all levels of government)
+
 income2012 = read.csv("bls data 2013.csv")
 income2013 = read.csv("bls data 2013.csv")
 income2014 = read.csv("bls data 2014.csv")
 income2015 = read.csv("bls data 2015.csv")
 income2016 = read.csv("bls data 2016 1qtr.csv")
+
+# Subset the data. Variables retained are [3] "industry_code", [6] "year", [14] "annual_avg_wkly_wage", [15] "avg_annual_pay",
+# [35] "oty_annual_avg_wkly_wage_chg", [36]"oty_annual_avg_wkly_wage_pct_chg", [37] "oty_avg_annual_pay_chg", [38] "oty_avg_annual_pay_pct_chg"
+
+df_inc_2012 = income2012[, c(3,6,14,15,35,36,37,38)]
+df_inc_2013 = income2013[, c(3,6,14,15,35,36,37,38)]
+df_inc_2014 = income2014[, c(3,6,14,15,35,36,37,38)]
+df_inc_2015 = income2015[, c(3,6,14,15,35,36,37,38)]
