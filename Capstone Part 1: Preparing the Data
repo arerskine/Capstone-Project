@@ -43,3 +43,16 @@ df_min_wage = mutate(df_min_wage, min_monthly_aftertaxes = min_monthly_wage - mi
 # Create a yearly gross for the minimum wage and yearly after tax earnings.
 df_min_wage = mutate(df_min_wage, gross_min_annual_pay = min_monthly_wage*12)
 df_min_wage = mutate(df_min_wage, aftertax_min_annual_pay = min_monthly_aftertaxes*12)
+
+# Create average annual pay for the 2016 year. This is only based off the first quarter.
+df_inc_2016 = mutate(df_inc_2016, avg_annual_pay = avg_monthly_wage*12)
+
+# Refine variables in income data frames for years 2012-2015 to match the variables in 2016. Here I will only keep the
+# first row of data representing the overall average for all industries to get the average employee wages for LA County.
+
+df_inc_2012 = df_inc_2012[1, c(2,3,4,5,6,9)]
+df_inc_2013 = df_inc_2013[1, c(2,3,4,5,6,9)]
+df_inc_2014 = df_inc_2014[1, c(2,3,4,5,6,9)]
+df_inc_2015 = df_inc_2015[1, c(2,3,4,5,6,9)]
+
+
