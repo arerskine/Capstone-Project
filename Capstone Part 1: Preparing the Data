@@ -18,3 +18,10 @@ df_inc_2015 = income2015[, c(3,6,14,15,35,36,37,38)]
 # "oty_avg_wkly_wage_chg", "oty_avg_wkly_wage_pct_chg"
 
 df_inc_2016 = income2016[, c(3,6,16,41,42)]
+
+# Create an average monthly wages column for all years of income data.
+df_inc_2012 = mutate(df_inc_2012, avg_monthly_wage = annual_avg_wkly_wage*4)
+df_inc_2013 = mutate(df_inc_2013, avg_monthly_wage = annual_avg_wkly_wage*4)
+df_inc_2014 = mutate(df_inc_2014, avg_monthly_wage = annual_avg_wkly_wage*4)
+df_inc_2015 = mutate(df_inc_2015, avg_monthly_wage = annual_avg_wkly_wage*4)
+df_inc_2016 = mutate(df_inc_2016, avg_monthly_wage = avg_wkly_wage*4)
