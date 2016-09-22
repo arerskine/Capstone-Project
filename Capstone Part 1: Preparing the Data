@@ -56,11 +56,11 @@ df_inc_2014 = df_inc_2014[1, c(2,3,4,5,6,9)]
 df_inc_2015 = df_inc_2015[1, c(2,3,4,5,6,9)]
 df_inc_2016 = df_inc_2016[1, 2:7]
 
-# Match column names in the 2012 to 2015 data to 2016.
+# Match column names in the 2012 to 2015 data to 2016 data.
 names(df_inc_2012) = c("year", "avg_wkly_wage", "avg_annual_pay", "oty_avg_wkly_wage_chg", "oty_avg_wkly_wage_pct_chg", "avg_monthly_wage")
 names(df_inc_2013) = c("year", "avg_wkly_wage", "avg_annual_pay", "oty_avg_wkly_wage_chg", "oty_avg_wkly_wage_pct_chg", "avg_monthly_wage")
 names(df_inc_2014) = c("year", "avg_wkly_wage", "avg_annual_pay", "oty_avg_wkly_wage_chg", "oty_avg_wkly_wage_pct_chg", "avg_monthly_wage")
 names(df_inc_2015) = c("year", "avg_wkly_wage", "avg_annual_pay", "oty_avg_wkly_wage_chg", "oty_avg_wkly_wage_pct_chg", "avg_monthly_wage")
 
-
-
+# Bind the data frames for 2012 to 2016 together into one data frame that shows wage data for the average employee in LA County for each year.
+df_avg_wage = rbind(df_inc_2012, df_inc_2013, df_inc_2014, df_inc_2015, df_inc_2016)
