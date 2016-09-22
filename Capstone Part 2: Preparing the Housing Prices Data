@@ -1,0 +1,3 @@
+# Load in data for average rent prices in Los Angeles, CA and median home values in Los Angeles County.
+df_avg_rent = read.xlsx("Average Rent Prices.xlsx", sheetIndex = 1)
+df_mdn_homevalue = read.xlsx("Median Home Values.xlsx", sheetIndex = 1)
