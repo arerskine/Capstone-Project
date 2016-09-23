@@ -3,3 +3,12 @@
 
 df_avg_rent = read.xlsx("Average Rent Prices.xlsx", sheetIndex = 1)
 df_mdn_homevalue = read.xlsx("Median Home Values.xlsx", sheetIndex = 1)
+
+# Create an avg median home value for the years 2011 to 2017
+year1mdn = mean(df_mdn_homevalue[1:12,2])
+year2mdn = mean(df_mdn_homevalue[13:24,2])
+year3mdn = mean(df_mdn_homevalue[25:36,2])
+year4mdn = mean(df_mdn_homevalue[37:48,2])
+year5mdn = mean(df_mdn_homevalue[49:60,2])
+year6mdn = mean(df_mdn_homevalue[61:72,2])
+year7mdn = mean(df_mdn_homevalue[73:79,2])
