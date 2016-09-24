@@ -4,13 +4,14 @@
 model1bedrent = lm(Avg_Rent ~ Year, data = df_avg_rent_1bed)
 
 # Set the newdata to predict for the years 2017 to 2020 based off the model.
-avg1bedrent2020 = data.frame(Year = c(2017,2018,2019,2020))
-predictAvg1bedrent = predict(model1bedrent, newdata = avg1bedrent2020)
+year2017to2020 = data.frame(Year = c(2017,2018,2019,2020))
+predictAvg1bedrent = predict(model1bedrent, newdata = year2017to2020)
 predictAvg1bedrent
 
 # Plot the linear model
 ggplot(df_avg_rent_1bed,aes(x=Year,y=Avg_Rent)) + geom_point() + xlim(2011,2020) +
 stat_smooth(method="lm",fullrange=TRUE)
+
 
 
 ### Average median home value for Los Angeles County for 2011 to 2020.
@@ -19,10 +20,21 @@ stat_smooth(method="lm",fullrange=TRUE)
 modelHomeValue = lm(Avg_Median_HomeValue ~ Year, data = df_avg_mdn_homevalue)
 
 # Set the newdata to predict for the years 2017 to 2020 based off the model.
-avgMdnHomeValue2020 = data.frame(Year = c(2017,2018,2019,2020))
-predictAvgMdnHomeValue = predict(modelHomeValue, newdata = avgMdnHomeValue2020)
+predictAvgMdnHomeValue = predict(modelHomeValue, newdata = year2017to2020)
 predictAvgMdnHomeValue
 
 # Plot the linear model
 ggplot(df_avg_mdn_homevalue, aes(x=Year, y=Avg_Median_HomeValue)) + geom_point() + xlim(2011,2020) +    
 stat_smooth(method="lm",fullrange=TRUE)
+
+
+
+### Average monthly wage for the average employee across all industries for Los Angeles County.
+
+# Create model with average monthly wage as the x variable and year as the y variable.
+modelAvgWage = lm(avg_monthly_wage ~ year, data = df_avg_wage)
+
+# Set the newdata to predict for the years 2017 to 2020 based off the model.
+
+
+# Plot the linear model
