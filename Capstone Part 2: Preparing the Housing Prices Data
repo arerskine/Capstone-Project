@@ -18,3 +18,10 @@ df_avg_mdn_homevalue = data.frame(Year = c(2011:2017), Avg_Median_HomeValue = c(
 
 #Create an average rent price for 1 bedroom apartments by year. The last year does not have 12 months of data.
 order(df_avg_rent$Month) # Chronologically order the months.
+
+year1avg1bed = mean(df_avg_rent[c(1,22,28,34,40,46,52,58,64,7,12,17),3])
+year2avg1bed = mean(df_avg_rent[c(2,23,29,35,41,47,53,59,65,8,13,18),3])
+year3avg1bed = mean(df_avg_rent[c(3,24,30,36,42,48,54,60,66,9,14,19),3])
+year4avg1bed = mean(df_avg_rent[c(4,25,31,37,43,49,55,61,67,10,15,20),3])
+year5avg1bed = mean(df_avg_rent[c(5,26,32,38,44,50,56,62,68,11,16,21),3])
+year6avg1bed = mean(df_avg_rent[c(6,27,33,39,45,51,57,63),3])
