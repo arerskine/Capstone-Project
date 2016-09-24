@@ -2,4 +2,4 @@
 ggplot(df_avg_rent_1bed,aes(x=Year,y=Avg_Rent)) + geom_point() + xlim(2011,2020) +
 +     stat_smooth(method="lm",fullrange=TRUE)
 
-model1bedrent = lm(Year ~ Avg_Rent, data = df_avg_rent_1bed)
+model1bedrent = lm(Avg_Rent ~ Year, data = df_avg_rent_1bed)
