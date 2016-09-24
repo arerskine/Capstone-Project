@@ -19,7 +19,7 @@ stat_smooth(method="lm",fullrange=TRUE)
 # Create model with average median home value as the x variable and year as the y variable.
 modelHomeValue = lm(Avg_Median_HomeValue ~ Year, data = df_avg_mdn_homevalue)
 
-# Set the newdata to predict for the years 2017 to 2020 based off the model.
+# Predict for the years 2017 to 2020 based off the model.
 predictAvgMdnHomeValue = predict(modelHomeValue, newdata = Year2017to2020)
 predictAvgMdnHomeValue
 
@@ -46,4 +46,16 @@ stat_smooth(method="lm",fullrange=TRUE)
 
 
 
-### Minimum Wage
+### Monthly minimum wage
+
+# Create model with minimum monthly wage as the x variable and year as the y variable.
+modelMonthlyMinWage = lm(min_monthly_wage ~ year, data = df_min_wage)
+
+# Predict for the years 2017 to 2020 based off the model.
+predictMonthlyMinWage = predict(modelMonthlyMinWage, newdata = year2017to2020)
+predictMonthlyMinWage
+
+# Plot the linear model.
+ggplot(df_min_wage, aes(x=year, y=min_monthly_wage)) + geom_point() +
+stat_smooth(method="lm",fullrange=TRUE)
+
