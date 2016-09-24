@@ -12,3 +12,7 @@ year4mdn = mean(df_mdn_homevalue[37:48,2])
 year5mdn = mean(df_mdn_homevalue[49:60,2])
 year6mdn = mean(df_mdn_homevalue[61:72,2])
 year7mdn = mean(df_mdn_homevalue[73:79,2])
+
+#Create a new data frame that has the average median value for each year.
+df_avg_mdn_homevalue = data.frame(Year = c(2011:2017), Avg_Median_HomeValue = c(year1mdn, year2mdn, year3mdn, year4mdn, year5mdn, year6mdn, year7mdn))
+
