@@ -4,8 +4,8 @@
 model1bedrent = lm(Avg_Rent ~ Year, data = df_avg_rent_1bed)
 
 # Set the newdata to predict for the years 2017 to 2020 based off the model.
-year2017to2020 = data.frame(Year = c(2017,2018,2019,2020))
-predictAvg1bedrent = predict(model1bedrent, newdata = year2017to2020)
+Year2017to2020 = data.frame(Year = c(2017,2018,2019,2020))
+predictAvg1bedrent = predict(model1bedrent, newdata = Year2017to2020)
 predictAvg1bedrent
 
 # Plot the linear model
@@ -20,7 +20,7 @@ stat_smooth(method="lm",fullrange=TRUE)
 modelHomeValue = lm(Avg_Median_HomeValue ~ Year, data = df_avg_mdn_homevalue)
 
 # Set the newdata to predict for the years 2017 to 2020 based off the model.
-predictAvgMdnHomeValue = predict(modelHomeValue, newdata = year2017to2020)
+predictAvgMdnHomeValue = predict(modelHomeValue, newdata = Year2017to2020)
 predictAvgMdnHomeValue
 
 # Plot the linear model
