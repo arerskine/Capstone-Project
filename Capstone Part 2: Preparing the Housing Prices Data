@@ -14,9 +14,15 @@ year5mdn = mean(df_mdn_homevalue[49:60,2])
 year6mdn = mean(df_mdn_homevalue[61:72,2])
 year7mdn = mean(df_mdn_homevalue[73:79,2])
 
-#Create a new data frame that has the average median value for each year.
+# Create a new data frame that has the average median value for each year.
 
 df_avg_mdn_homevalue = data.frame(Year = c(2011:2017), Avg_Median_HomeValue = c(year1mdn, year2mdn, year3mdn, year4mdn, year5mdn, year6mdn, year7mdn))
+
+# Home values are not as easily comparable to monthly wages as monthly rent price. 
+# Here I add a monthly mortgage payment column to the average median home values dataframe using the mortgage calculator on Zillow.
+# Mortgage payment based on estimated rates for each year at <http://www.hsh.com/monthly-mortgage-rates.html> along with a 30 year term and 5% down.
+
+df_avg_mdn_homevalue = mutate(df_avg_mdn_homevalue, Monthly_Mortgage_Payment = c(2542, 2348, 2729, 2993, 3109, 3224, 3351))
 
 # Create an average rent price for 1 bedroom apartments for each year. The last year does not have 12 months of data.
 
