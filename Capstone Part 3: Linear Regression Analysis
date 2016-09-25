@@ -1,6 +1,6 @@
 ### Average rent for 1 bedroom apartments in Los Angeles, CA from 2011 to 2020.
 
-# Create model with average rent as the x variable and year as the y variable.
+# Create model with average rent as the x variable and Year as the y variable.
 
 model1bedrent = lm(Avg_Rent ~ Year, data = df_avg_rent_1bed)
 
@@ -21,7 +21,7 @@ plotAvg1bedrent
 
 ### Average median home value for Los Angeles County for 2011 to 2020.
 
-# Create model with average median home value as the x variable and year as the y variable.
+# Create model with average median home value as the x variable and Year as the y variable.
 
 modelHomeValue = lm(Avg_Median_HomeValue ~ Year, data = df_avg_mdn_homevalue)
 
@@ -36,6 +36,24 @@ plotAvgMdnHomeValue = ggplot(df_avg_mdn_homevalue, aes(x=Year, y=Avg_Median_Home
 stat_smooth(method="lm",fullrange=TRUE)
 
 plotAvgMdnHomeValue
+
+
+
+### Monthly mortgage payment based off 30-year fixed term, 5% down, average interest rate, and median home value for Los Angeles County for 2011 to 2020.
+
+# Create model with monthly mortgage payment as the x variable and Year as the y variable.
+modelMonthlyMortgage = lm(Monthly_Mortgage_Payment ~ Year, data = df_avg_mdn_homevalue)
+
+# Predict for the years 2017 to 2020 based off the model.
+predictMonthlyMortgage = predict(modelMonthlyMortgage, newdata = Year2017to2020)
+predictMonthlyMortgage
+
+# Plot the linear model
+
+plotMonthlyMortgage = ggplot(df_avg_mdn_homevalue, aes(x=Year, y=Monthly_Mortgage_Payment)) + geom_point() + xlim(2011,2020) +    
+stat_smooth(method="lm",fullrange=TRUE)
+
+plotMonthlyMortgage
 
 
 
