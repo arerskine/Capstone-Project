@@ -14,12 +14,13 @@ df_inc_2013 = income2013[, c(3,6,14,15,35,36,37,38)]
 df_inc_2014 = income2014[, c(3,6,14,15,35,36,37,38)]
 df_inc_2015 = income2015[, c(3,6,14,15,35,36,37,38)]
 
-#Subset the data for the first quater in 2016. Variables retained are: "industry_code", "year", "avg_wkly_wage", 
+# Subset the data for the first quater in 2016. Variables retained are: "industry_code", "year", "avg_wkly_wage", 
 # "oty_avg_wkly_wage_chg", "oty_avg_wkly_wage_pct_chg"
 
 df_inc_2016 = income2016[, c(3,6,16,41,42)]
 
 # Create an average monthly wages column for all years of income data.
+
 df_inc_2012 = mutate(df_inc_2012, avg_monthly_wage = annual_avg_wkly_wage*4)
 df_inc_2013 = mutate(df_inc_2013, avg_monthly_wage = annual_avg_wkly_wage*4)
 df_inc_2014 = mutate(df_inc_2014, avg_monthly_wage = annual_avg_wkly_wage*4)
@@ -33,6 +34,7 @@ year = c(1998, 2001, 2002, 2007, 2008, 2014, 2016, 2020)
 df_min_wage = data.frame(year, min_wage)
 
 # Create a column for the monthly minimum wage from the minimum wage
+
 df_min_wage = mutate(df_min_wage, min_monthly_wage = min_wage*40*4)
 
 # Create a column for the monthly minimum wage after taxes. After tax estimates based on 
@@ -41,10 +43,12 @@ df_min_wage = mutate(df_min_wage, min_monthly_wage = min_wage*40*4)
 df_min_wage = mutate(df_min_wage, min_monthly_aftertaxes = min_monthly_wage - min_monthly_wage*.12)
 
 # Create a yearly gross for the minimum wage and yearly after tax earnings.
+
 df_min_wage = mutate(df_min_wage, gross_min_annual_pay = min_monthly_wage*12)
 df_min_wage = mutate(df_min_wage, aftertax_min_annual_pay = min_monthly_aftertaxes*12)
 
 # Create average annual pay for the 2016 year. This is only based off the first quarter.
+
 df_inc_2016 = mutate(df_inc_2016, avg_annual_pay = avg_monthly_wage*12)
 
 # Refine variables in income data frames for years 2012-2015 to match the variables in 2016. Here I will only keep the
@@ -57,10 +61,12 @@ df_inc_2015 = df_inc_2015[1, c(2,3,4,5,6,9)]
 df_inc_2016 = df_inc_2016[1, 2:7]
 
 # Match column names in the 2012 to 2015 data to 2016 data.
+
 names(df_inc_2012) = c("year", "avg_wkly_wage", "avg_annual_pay", "oty_avg_wkly_wage_chg", "oty_avg_wkly_wage_pct_chg", "avg_monthly_wage")
 names(df_inc_2013) = c("year", "avg_wkly_wage", "avg_annual_pay", "oty_avg_wkly_wage_chg", "oty_avg_wkly_wage_pct_chg", "avg_monthly_wage")
 names(df_inc_2014) = c("year", "avg_wkly_wage", "avg_annual_pay", "oty_avg_wkly_wage_chg", "oty_avg_wkly_wage_pct_chg", "avg_monthly_wage")
 names(df_inc_2015) = c("year", "avg_wkly_wage", "avg_annual_pay", "oty_avg_wkly_wage_chg", "oty_avg_wkly_wage_pct_chg", "avg_monthly_wage")
 
 # Bind the data frames for 2012 to 2016 together into one data frame that shows wage data for the average employee in LA County for each year.
+
 df_avg_wage = rbind(df_inc_2012, df_inc_2013, df_inc_2014, df_inc_2015, df_inc_2016)
