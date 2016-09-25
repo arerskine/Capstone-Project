@@ -1,61 +1,80 @@
 ### Average rent for 1 bedroom apartments in Los Angeles, CA from 2011 to 2020.
 
 # Create model with average rent as the x variable and year as the y variable.
+
 model1bedrent = lm(Avg_Rent ~ Year, data = df_avg_rent_1bed)
 
 # Set the newdata to predict for the years 2017 to 2020 based off the model.
+
 Year2017to2020 = data.frame(Year = c(2017,2018,2019,2020))
 predictAvg1bedrent = predict(model1bedrent, newdata = Year2017to2020)
 predictAvg1bedrent
 
 # Plot the linear model
-ggplot(df_avg_rent_1bed,aes(x=Year,y=Avg_Rent)) + geom_point() + xlim(2011,2020) +
+
+plotAvg1bedrent = ggplot(df_avg_rent_1bed,aes(x=Year,y=Avg_Rent)) + geom_point() + xlim(2011,2020) +
 stat_smooth(method="lm",fullrange=TRUE)
+
+plotAvg1bedrent
 
 
 
 ### Average median home value for Los Angeles County for 2011 to 2020.
 
 # Create model with average median home value as the x variable and year as the y variable.
+
 modelHomeValue = lm(Avg_Median_HomeValue ~ Year, data = df_avg_mdn_homevalue)
 
 # Predict for the years 2017 to 2020 based off the model.
+
 predictAvgMdnHomeValue = predict(modelHomeValue, newdata = Year2017to2020)
 predictAvgMdnHomeValue
 
 # Plot the linear model
-ggplot(df_avg_mdn_homevalue, aes(x=Year, y=Avg_Median_HomeValue)) + geom_point() + xlim(2011,2020) +    
+
+plotAvgMdnHomeValue = ggplot(df_avg_mdn_homevalue, aes(x=Year, y=Avg_Median_HomeValue)) + geom_point() + xlim(2011,2020) +    
 stat_smooth(method="lm",fullrange=TRUE)
+
+plotAvgMdnHomeValue
 
 
 
 ### Average monthly wage for the average employee across all industries for Los Angeles County.
 
 # Create model with average monthly wage as the x variable and year as the y variable.
+
 modelAvgWage = lm(avg_monthly_wage ~ year, data = df_avg_wage)
 
 # Set the newdata to predict for the years 2017 to 2020 based off the model. 
 # **Note that I made another 2017 to 2020 data frame because the variable for year in the wages data has a lowercase y not uppercase.
+
 year2017to2020 = data.frame(year = c(2017,2018,2019,2020))
 predictAvgMonthlyWage = predict(modelAvgMonthlyWage, newdata = year2017to2020)
 predictAvgMonthlyWage
 
 # Plot the linear model **Note that wage data starts from 2012
-ggplot(df_avg_wage, aes(x=year, y=avg_monthly_wage)) + geom_point() + xlim(2012,2020) + 
+
+plotAvgMonthlyWage = ggplot(df_avg_wage, aes(x=year, y=avg_monthly_wage)) + geom_point() + xlim(2012,2020) + 
 stat_smooth(method="lm",fullrange=TRUE)
+
+plotAvgMonthlyWage
 
 
 
 ### Monthly minimum wage
 
 # Create model with minimum monthly wage as the x variable and year as the y variable.
+
 modelMonthlyMinWage = lm(min_monthly_wage ~ year, data = df_min_wage)
 
 # Predict for the years 2017 to 2020 based off the model.
+
 predictMonthlyMinWage = predict(modelMonthlyMinWage, newdata = year2017to2020)
 predictMonthlyMinWage
 
 # Plot the linear model.
-ggplot(df_min_wage, aes(x=year, y=min_monthly_wage)) + geom_point() +
+
+plotMinMonthlyWage = ggplot(df_min_wage, aes(x=year, y=min_monthly_wage)) + geom_point() +
 stat_smooth(method="lm",fullrange=TRUE)
 
+plotMinMonthlyWage
