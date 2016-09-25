@@ -5,6 +5,7 @@ df_avg_rent = read.xlsx("Average Rent Prices.xlsx", sheetIndex = 1)
 df_mdn_homevalue = read.xlsx("Median Home Values.xlsx", sheetIndex = 1)
 
 # Create an average median home value for the years 2011 to 2017
+
 year1mdn = mean(df_mdn_homevalue[1:12,2])
 year2mdn = mean(df_mdn_homevalue[13:24,2])
 year3mdn = mean(df_mdn_homevalue[25:36,2])
@@ -14,9 +15,11 @@ year6mdn = mean(df_mdn_homevalue[61:72,2])
 year7mdn = mean(df_mdn_homevalue[73:79,2])
 
 #Create a new data frame that has the average median value for each year.
+
 df_avg_mdn_homevalue = data.frame(Year = c(2011:2017), Avg_Median_HomeValue = c(year1mdn, year2mdn, year3mdn, year4mdn, year5mdn, year6mdn, year7mdn))
 
 # Create an average rent price for 1 bedroom apartments for each year. The last year does not have 12 months of data.
+
 order(df_avg_rent$Month) # Chronologically order the months.
 
 year1avg1bed = mean(df_avg_rent[c(1,22,28,34,40,46,52,58,64,7,12,17),3])
@@ -27,4 +30,5 @@ year5avg1bed = mean(df_avg_rent[c(5,26,32,38,44,50,56,62,68,11,16,21),3])
 year6avg1bed = mean(df_avg_rent[c(6,27,33,39,45,51,57,63),3])
 
 # Make a dataframe out of the years of average rent for 2011 to 2016
+
 df_avg_rent_1bed = data.frame(Year = c(2011:2016), Avg_Rent = c(year1avg1bed, year2avg1bed, year3avg1bed, year4avg1bed, year5avg1bed, year6avg1bed))
