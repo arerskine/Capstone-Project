@@ -27,7 +27,9 @@ df_inc_2014 = mutate(df_inc_2014, avg_monthly_wage = annual_avg_wkly_wage*4)
 df_inc_2015 = mutate(df_inc_2015, avg_monthly_wage = annual_avg_wkly_wage*4)
 df_inc_2016 = mutate(df_inc_2016, avg_monthly_wage = avg_wkly_wage*4)
 
-# Create a minimum wage data frame with data from <http://www.dir.ca.gov/iwc/minimumwagehistory.htm>
+
+
+### Create a minimum wage data frame with data from <http://www.dir.ca.gov/iwc/minimumwagehistory.htm>
 
 min_wage = c(5.75, 6.25, 6.75, 7.50, 8.00, 9.00, 10.00, 15.00)
 year = c(1998, 2001, 2002, 2007, 2008, 2014, 2016, 2020)
@@ -46,6 +48,11 @@ df_min_wage = mutate(df_min_wage, min_monthly_aftertaxes = min_monthly_wage - mi
 
 df_min_wage = mutate(df_min_wage, gross_min_annual_pay = min_monthly_wage*12)
 df_min_wage = mutate(df_min_wage, aftertax_min_annual_pay = min_monthly_aftertaxes*12)
+
+# Make a column showing the percentage change for the minimum wage over the previous minimum wage.
+df_min_wage = mutate(df_min_wage, min_wage_pct_chg = c("NULL", 8, 7.40, 10, 6.25, 11.11, 10, 33.33))
+
+
 
 # Create average annual pay for the 2016 year. This is only based off the first quarter.
 
