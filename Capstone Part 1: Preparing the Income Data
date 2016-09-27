@@ -52,13 +52,13 @@ df_min_wage = mutate(df_min_wage, aftertax_min_annual_pay = min_monthly_aftertax
 # Use a function to calculate the percentage increase the minimum wage is for any year over the last minimum wage.
 # Take the difference of the previous minimum wage from the next minimum wage and divide that by the previous minimum wage.
 
-perc_diff_fn <- function(x) (x - lag(x))/lag(x)
+perc_diff_fn = function(x) (x - lag(x))/lag(x)
 perc_diff_fn(min_wage_df$min_wage)
 
 # Make a column showing the percentage change for the minimum wage over the previous minimum wage.
 
-min_wage_df$percent_change <- perc_diff_fn(min_wage_df$min_wage)
-min_wage_df$percent_change <- min_wage_df$percent_change*100
+min_wage_df$percent_change = perc_diff_fn(min_wage_df$min_wage)
+min_wage_df$percent_change = min_wage_df$percent_change*100
 
 
 # Create average annual pay for the 2016 year. This is only based off the first quarter.
