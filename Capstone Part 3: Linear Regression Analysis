@@ -102,4 +102,4 @@ plotMinMonthlyWage
 ### Lastly, I want to compare all of the monthly values on one graph.
 # To do this I can put all the variables I want to compare in one dataframe.
 
-df_all_monthly = data.frame
+df_all_monthly = data.frame(Years = c(1998:2020), 
