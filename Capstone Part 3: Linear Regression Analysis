@@ -102,4 +102,8 @@ plotMinMonthlyWage
 ### Lastly, I want to compare all of the monthly values on one graph.
 # To do this I can put all the variables I want to compare in one dataframe.
 
+df_min_wage_final = data.frame(Year = df_min_wage$year, min_monthly_wage = df_min_wage$min_monthly_wage)
+df_avg_wage_final = data.frame(Year = df_avg_wage$year, avg_monthly_wage = df_avg_wage$avg_monthly_wage)
+df_monthly_mortgage = data.frame(Year = df_avg_mdn_homevalue$Year, Monthly_Mortgage_Payment = df_avg_mdn_homevalue$Monthly_Mortgage_Payment)
+
 df_all_monthly = data.frame(Years = c(1998:2020), 
