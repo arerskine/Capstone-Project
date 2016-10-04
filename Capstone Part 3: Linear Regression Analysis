@@ -119,7 +119,7 @@ df_monthly_mortgage = data.frame(Year = df_avg_mdn_homevalue$Year, Monthly_Mortg
 plotAllMonthly = ggplot(df_all_monthly, aes(x = Year, y = Amount, color = Item)) +
       geom_line() +
       geom_point() +
-      stat_smooth(fullrange = TRUE, se = FALSE) +
+      stat_smooth(fullrange = TRUE) +
       xlim(2008,2016)
 
 plotAllMonthly
@@ -145,5 +145,7 @@ df_predict_all_monthly =  df_min_wage_final %>%
 plotPredictAllMonthly = ggplot(df_predict_all_monthly, aes(x = Year, y = Amount, color = Item)) +
      geom_line() +
      geom_point() +
-     stat_smooth(fullrange = TRUE, se = FALSE) +
+     stat_smooth(fullrange = TRUE) +
      xlim(2008,2020)
+
+plotPredictAllMonthly
