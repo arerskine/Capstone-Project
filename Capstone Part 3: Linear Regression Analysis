@@ -61,7 +61,7 @@ plotMonthlyMortgage
 
 # Create model with average monthly wage as the x variable and year as the y variable.
 
-modelAvgWage = lm(avg_monthly_wage ~ year, data = df_avg_wage)
+modelAvgMonthlyWage = lm(avg_monthly_wage ~ year, data = df_avg_wage)
 
 # Set the newdata to predict for the years 2017 to 2020 based off the model. 
 # **Note that I made another 2017 to 2020 data frame because the variable for year in the wages data has a lowercase y not uppercase.
