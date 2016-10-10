@@ -11,7 +11,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-A minimum wage raise was recently approved by the city of Los Angeles, CA. The minimum wage will rise to $15 an hour by 2020. This is part of a nationwide movement for a $15 an hour minimum wage in various cities and states. The main question I am asking in this project is: Does the minimum wage increase in 2020 make monthly rent or mortgage payments more affordable for the minimum wage earner in 2020 compared to the minimum wage earner in 2016? In addition, I will look a little further into this topic. If the wage increase makes the monthly payment for housing more affordable, how affordable is it? Is there any scenario that a monthly payment for a place to live in Los Angeles will be the recommended 30% of the wage earner's budget? Also included in this project is the average wage for all incomes in Los Angeles County for comparison with a minimum wage earner.
+A minimum wage raise was recently approved by the city of Los Angeles, CA. The minimum wage will rise to $15 an hour by 2020. The main question I am asking in this project is this: Does the minimum wage increase to $15 an hour by 2020 make monthly rent or mortgage payments more affordable for the minimum wage earner in 2020 compared to the minimum wage earner in 2016? In addition, I will look a little further into this topic. If the wage increase makes the monthly payment for housing more affordable, how affordable is it? Is there any scenario that a monthly payment for a place to live in Los Angeles will be the recommended 30% of the wage earner's budget? Also included in this project is the average wage for all incomes in Los Angeles County for comparison with a minimum wage earner.
+
+## Motivation
+
+My primary client for this project would be the Movement for $15. The Movement for $15 is a nationwide movement for a $15 an hour minimum wage in various cities and states. I chose this client because the data I was able to access allowed me to run an analysis that bests look at the problem from their perspective. I have a future value that is set for a minimum wage in 2020 that I can compare to what this project's predictions tell me. Based off my analysis, the Movement for $15 can decide if the wage they are fighting for is making the impact they want it to. 
+
+The project's audience extends beyond minimum wage earners that are fighting for a higher wage. Those who invest in or work in the housing industry would also be interested in this project. If I were to tailor my analysis to this client, I would want to show in what neighborhoods of Los Angeles there are higher numbers of minimum wage earners. I would also need data that records the price of housing in the specific neighborhood for each year to see if the price of housing is rising at different rates for the neighborhoods. With better predictions for the housing market, the client could decide what kind of housing should be built in a neighborhood and what the expected sale or rent price should be.
+
+Legislators in Los Angeles and other government bodies may also have an interest in this project since they are the one's approving minimum wage increases. If I ran an analysis for legislators, I might want to break down wage earners by specific industries. For instance, they may want to  see what industries have the highest number of minimum wage workers so they can pass legislation that targets those specific industries and provide incentives for employers to raise wages. The city could also take from that analysis that the average rent price may be too high for the amount of minimum wage workers in the city and approve more projects that construct affordable apartments.
 
 ## Preparing the Income and Housing Data
 
@@ -24,6 +32,8 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(stats)
+library(xtable)
+library(scales)
 
 # Read in wage data for Los Angeles County for all industry levels (Private and all levels of government)
 
@@ -403,7 +413,9 @@ Both the 2016 and 2020 line graphs show that all items are increasing. The main 
 
 Looking at the wage predictions for 2020, the average rent and average mortgage payment becomes more affordable for a minimum wage earner. However, the minimum wage earner can't handle these costs on their own because it would be more than 100% of their monthly income. Upon further inspection of my data, I realized there are some pretty expensive areas in Los Angeles that bring up the rent average. 
 
-I have data for average rent by each neighborhood in Los Angeles, but only for the most current complete month, which for this study is September 2016. This data removes the most expensive neighborhood that was present in my original rent data. Although it is not as accurate as my prediction models, I estimated what the average rent would be in each neighborhood by applying the percent change for the average rent in Los Angeles from 2016 to 2020 to each neighborhood. The neightborhood data is shown as an average across all rental types, but my project only deals with 1 bedroom apartments. I needed to find out what the average rent difference is between all types and a 1 bedroom apartment in my data. Then I found out what percent this difference is from the price so I can apply it to the neighborhood data.
+I have data for average rent by each neighborhood in Los Angeles, but only for the most current complete month. For this study that is September 2016. This data removes the most expensive neighborhood that was present in my original rent data. I estimated what the average rent would be in each neighborhood by applying the percent change for the average rent in Los Angeles from 2016 to 2020 to each neighborhood. I could not use prediction with linear models since I did not have more than one month of data. 
+
+The neightborhood data is shown as an average across all rental types, but my project only deals with 1 bedroom apartments. I needed to find out what the average rent difference is between all types and a 1 bedroom apartment in my data. Then I found out what percent this difference is from the price so I can apply it to the neighborhood data.
 ```{r, echo=FALSE}
 df_neighborhood_avg_rent = read.xlsx("Neighborhood Average Rent.xlsx", sheetIndex = 1)
 ```
@@ -432,23 +444,54 @@ The 1 bedroom apartment rent increases by about 25.03% from 2016 to 2020 accordi
 # Make a new column for the estimated neighborhood prices in 2020.
 df_neighborhood_avg_rent = mutate(df_neighborhood_avg_rent, Avg_Rent_2020 = df_neighborhood_avg_rent$Adjusted_Rent_Sep2016*average_1br_perc_inc + df_neighborhood_avg_rent$Adjusted_Rent_Sep2016)
 ```
-My predictions from the minimum wage data told me that a full time minimum wage employee will receive $2,400 a month. I use the neighborhood predictions to see what areas this wage would be able to afford according to a common idea which recommends the cost of a place to live should be 30% of the income. When I look at the list I see that no areas in 2020 will be 30% of $2,400. I decided that a minimum wage earner might be willing to deal with less disposable income in order to afford their living situation. If they spent 60% of their earnings that would be $1,440. Where could they afford to live if they spent 60% of earnings on a one bedroom apartment? 
+My predictions from the minimum wage data showed me that a full time minimum wage employee will receive $2,400 a month. I used the neighborhood predictions to see what areas this wage would be able to afford according to a common idea which recommends the cost of a place to live should be 30% of the income. Unfortunately, there are no areas in 2020 that will be 30% of $2,400 a month earned by the minimum wage. I decided that a minimum wage earner might be willing to deal with less disposable income in order to afford their living situation. If they spent 60% of their earnings that would be $1,440. Where could they afford to live if they spent 60% of earnings on a one bedroom apartment? 
 
-### A Minimum Wage Earner in 2020 spending up to 60% of income can afford a one bedroom apartment in:
-```{r, echo=FALSE}
-df_neighborhood_avg_rent[53:63, c(1,4)]
-```
-According to my average wage prediction model, the average wage earner for Los Angeles County in 2020 will make approximately $4,901.6 a month. When I apply the 30% rule to the average wage earners income it allows them to spend $1,470.48 on a place. Interestingly, this lets them afford the same average one bedroom apartment in Lakeview Terrace that the minimum wage earner has to spend near 60% of their income on. What kind of neighborhoods can the average wage earner afford if they want a nicer place and are willing to part with up to 60% of their income?
+I wanted to compare what neighborhoods the minimum wage could afford with what the average wage could afford in Los Angeles in 2020. According to my predictions, the average wage would give a person $4,901.60 a month. If this person uses 60% of their income for housing that would mean they spend $2.940.96 a month.
 
-### An Average Wage Earner in 2020 spending up to 60% of income can afford a one bedroom apartment in:
-```{r, echo=FALSE}
-df_neighborhood_avg_rent[18:63, c(1,4)]
+The graph below illustrates what neighborhoods are affordable to the minimum wage earner and the average wage earner when they spend 60% of their income. The top group also shows which neighborhoods neither can afford with that 60%. The affordable neighborhoods for each group are below the horizontal lines.
+
+### Neighborhood Average One Bedroom Rent in 2020
+```{r, echo=FALSE,  fig.height=8}
+neighb_graph_df <- data_frame(x = df_neighborhood_avg_rent$Neighborhood,  y = df_neighborhood_avg_rent$Avg_Rent_2020)
+
+levels_order <- neighb_graph_df[order(neighb_graph_df$y, decreasing=FALSE),]$x
+
+neighb_graph_df$x <- factor(neighb_graph_df$x, levels = levels_order)
+
+ggplot(neighb_graph_df, aes(x = x, y = y)) +
+   geom_point(aes(colour = y)) +
+   geom_vline(xintercept = 11.5, colour = "grey33") +
+   geom_vline(xintercept = 46.5, colour = "grey33") +
+   scale_color_gradientn(colours = c("red","purple","blue"), 
+                         values = c(rescale(x = c(1000, 1440, 2940, 4500))), 
+                         guide = "none") +
+   annotate(geom = "text", label = "Affordable on minimum wage", 
+            x = 10.5, y = 1500, hjust = 0, 
+            colour = "red") +
+   annotate(geom = "text", label = "Affordable on average wage", 
+            x = 45.5, y = 3000, hjust = 0, 
+            colour = "purple") +
+   annotate(geom = "text", label = "Affordable to higher income earners", 
+            x = 62.5, y = 1200, hjust = 0, 
+            colour = "blue") +
+   coord_flip() +
+   theme_bw() +
+     theme(axis.text.y=element_text(size=rel(0.7))) +
+  xlab("Neighborhood") +
+  ylab("Average Rent Price")
 ```
+
+## Future Research
+
+There were a few areas in my project that could be improved upon in further research. The data that was used did not stretch far back in years. Therefore, I could only base my predictions off less than 10 records for each database. The minimum wage data goes back to the early 1900's, but I wanted to use a similar number of years for each item. I would like to see this study done in the future when there is several decades of median home value, average rent, and average income data. My analysis was limited because of my assumption that an increase in the minimum change won't impact the housing market. I could not factor in any changes this would have on the average wage as I assumed it would not see an increase similar to what will happen to the minimum wage.
+
+The average rent data was also influenced by very expensive neighborhoods. If the median rent data for Los Angeles could be found, it would provide a better picture of rent prices. The rent data I got from rentjungle.com also had the problem that the neighborhood's were calculated in a way that included people listing a single room in a home or apartment for rent. These prices are usually lower than 1 bedroom apartment. Therefore, neighborhoods like Central City were priced lower than they should be because of the influence of people listing single rooms in their place. I would like to see the study redone while filtering out these single rooms. Additionally, the
+
+Lastly, the wage data used gross income and not net income after taxes. I had calculated these amounts but did not use them since I was focusing on a minimum wage earner who would likely get a good portion of their taxes back. If taxes were introduced to the data, both types of wage earners would see a decrease in what they can afford. I would like to see how the study would look when considering income after taxes. 
 
 ## Conclusion
 
 The minimum wage increase for Los Angeles in 2020 will make rent and mortgage payments more affordable for a minimum wage earner than they currently are. This can be seen from the all monthly comparison graphs and a quick crunch of the numbers confirms that. In 2016, the minimum wage earner makes $1,600 a month. This is 70.93% of the monthly rent of the average one bedroom apartment and 49.63% the monthly mortgage payment of the average median home for that year. In 2020, the minimum wage earner makes $2,400 a month. This changes the forementioned percentages to 85.09% and 61.91% respectively for 2020's rent and mortgage payments. Simply put, the wage raise will make the average rent 14.16% more affordable and the average mortgage payment 12.28% more affordable for a minimum wage earner.
 
-There were a few areas in my project that could be improved upon in further research. The data that was used did not stretch far back in years. Therefore, I could only base my predictions off less than 10 records for each database. The minimum wage data goes back to the early 1900's, but I wanted to use a similar number of years for each item. I would like to see this study done in the future when there is several decades of median home value, average rent, and average income data. Also, the average rent data was influenced by very expensive neighborhoods. If the median rent data for Los Angeles could be found, it would provide a better picture of rent prices. The rent data I got from rentjungle.com also had the problem that the neighborhood's were calculated in a way that included people listing a single room in a home or apartment for rent. These prices are usually lower than 1 bedroom apartment. Therefore, neighborhoods like Central City were priced lower than they should be because of the influence of people listing single rooms in their place. I would like to see the study redone while filtering out these single rooms. Lastly, the wage data used gross income and not net income after taxes. I had calculated these amounts but did not use them since I was focusing on a minimum wage earner who would likely get a good portion of their taxes back. Still I would like to see how the numbers would have come out when considering taxes. 
-
 I recommend that the Movement for $15 does not stop their work after achieving a $15 an hour wage across the country. If the minimum wage runs its natural course, it would appear that the gap in wages and affordability of average housing costs continues to get larger. They should also consider fighting for a wage that is a bit higher than $15 an hour in 2020. I think $17 an hour may have enough of an impact to see a significant improvement in standard of living by that year. This will allow the minimum wage earner to better afford some of the average neighborhoods in Los Angeles. The housing market may continue to be out of reach for a minimum wage earner. On top of this, there are many luxury apartments being built in Los Angeles that are not affordable for a minimum wage earner. These apartments are bringing up the average rental price. I suggest that the Movement for $15 could branch into a movement that fights for more affordable apartment rentals in cities like Los Angeles. 
+
