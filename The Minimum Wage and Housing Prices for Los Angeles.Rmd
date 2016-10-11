@@ -34,6 +34,7 @@ library(ggplot2)
 library(stats)
 library(xtable)
 library(scales)
+library(plyr)
 
 # Read in wage data for Los Angeles County for all industry levels (Private and all levels of government)
 
@@ -72,8 +73,8 @@ I created a minimum wage dataframe by using the years in which the minimum wage 
 ### Create a minimum wage data frame with data from <http://www.dir.ca.gov/iwc/minimumwagehistory.htm>
 
 min_wage = c(5.75, 6.25, 6.75, 7.50, 8.00, 9.00, 10.00, 15.00)
-year = c(1998, 2001, 2002, 2007, 2008, 2014, 2016, 2020)
-df_min_wage = data.frame(year, min_wage)
+Year = c(1998, 2001, 2002, 2007, 2008, 2014, 2016, 2020)
+df_min_wage = data.frame(Year, min_wage)
 ```
 Next, I made a monthly wage for the minimum wage earner based off a 40 hour work week and 4 working weeks a month. Here I also calculated a gross annual pay by multiplying the month column by 12 months and an after tax annual pay based off an estimated federal rate tax from the IRS's website.
 ```{r, echo=TRUE}
@@ -103,7 +104,7 @@ perc_diff_fn = function(x) (x - lag(x))/lag(x)
 df_min_wage$percent_change = perc_diff_fn(df_min_wage$min_wage)
 df_min_wage$percent_change = df_min_wage$percent_change*100
 ```
-The average wage data was located in seperate dataframes which recorded values for one year. In addition, I could only base 2016 off the 1st quarter, which when I checked the records, was a good representation of close to 25% of the yearly value. I created an average annual pay column by multiplying the monthly by 12 and then selected and renamed matching columns so I could bind my databases for years 2012 to 2016.
+The average wage data was located in seperate dataframes which recorded values for one year. In addition, I could only base 2016 off the 1st quarter, which when I checked the records, was a good representation of close to 25% of the yearly value. I created an average annual pay column by multiplying the monthly by 12 and then selected and renamed matching columns so I could bind my databases for years 2012 to 2016. I made sure the "year" column is changed to "Year" to match up with my other databases.
 ```{r, echo=TRUE}
 # Create average annual pay for the 2016 year. This is only based off the first quarter.
 
@@ -128,6 +129,10 @@ names(df_inc_2015) = c("year", "avg_wkly_wage", "avg_annual_pay", "oty_avg_wkly_
 # Bind the data frames for 2012 to 2016 together into one data frame that shows wage data for the average employee in LA County for each year.
 
 df_avg_wage = rbind(df_inc_2012, df_inc_2013, df_inc_2014, df_inc_2015, df_inc_2016)
+
+# Capitalize year so it is consistent with other dataframes.
+
+names(df_avg_wage) = c("Year", "avg_wkly_wage", "avg_annual_pay", "oty_avg_wkly_wage_chg", "oty_avg_wkly_wage_pct_chg", "avg_monthly_wage")
 
 ```
 ```{r, echo=FALSE}
@@ -183,8 +188,39 @@ df_avg_rent_1bed = data.frame(Year = c(2011:2016), Avg_Rent = c(year1avg1bed, ye
 
 I created linear regression models for all of the monthly variables I am comparing against the year. I used these models to predict the values for each variable for 2017 to 2020. The new data used in the prediction were the years 2017 to 2020. The code for the first variable is shown and omitted for the other 4 variables since it is roughly the same.
 
-### One Bedroom Apartment Rent Model and Prediction
+### Minimum Monthly Wage Model and Prediction
+
+In my project, I assume the minimum wage will be $15 an hour by 2020. I made a model and prediction for the minimum wage to see what the wage would be in 2020 according to previous data. I wanted to see how the predicted wage compared to the $15 an hour expectation.
 ```{r, echo=TRUE}
+# Minimum monthly wage for Los Angeles County.
+# Create model with minimum monthly wage as the x variable and year as the y variable.
+
+modelMonthlyMinWage = lm(min_monthly_wage ~ Year, data = df_min_wage)
+
+# Predict for the years 2017 to 2020 based off the model.
+
+Year2017to2020 = data.frame(Year = c(2017,2018,2019,2020))
+predictMonthlyMinWage = predict(modelMonthlyMinWage, newdata = Year2017to2020)
+```
+The minimum monthly wage is significantly correlated with the year, but it is the least correlated of all items. The adjusted R-squared is .7939 and the R Value is .8910. I expected this to be the case since the minimum wage does not change every year like the average wage or housing prices.
+```{r, echo=FALSE}
+summary(modelMonthlyMinWage)
+```
+The predicted minimum monthly wages for 2017 to 2020 are:
+```{r, echo=FALSE}
+predictMonthlyMinWage
+
+# Plot the linear model.
+
+plotMinMonthlyWage = ggplot(df_min_wage, aes(x=Year, y=min_monthly_wage)) + geom_point() +
+stat_smooth(method="lm",fullrange=TRUE) +
+ylab("Minimum Monthly Wage") +
+scale_x_continuous(breaks = c(seq(from=1998, to=2020, by=2))) +
+theme_bw()
+```
+
+### One Bedroom Apartment Rent Model and Prediction
+```{r, echo=FALSE}
 
 # Average rent for 1 bedroom apartments in Los Angeles, CA from 2011 to 2020.
 # Create model with average rent as the x variable and Year as the y variable.
@@ -193,7 +229,6 @@ model1bedrent = lm(Avg_Rent ~ Year, data = df_avg_rent_1bed)
 
 # Set the newdata to predict for the years 2017 to 2020 based off the model.
 
-Year2017to2020 = data.frame(Year = c(2017,2018,2019,2020))
 predictAvg1bedrent = predict(model1bedrent, newdata = Year2017to2020)
 ```
 The average 1 bedroom rent is highly correlated with the year with an adjusted R-Squared of .9619 and an R value of .9808.
@@ -201,13 +236,16 @@ The average 1 bedroom rent is highly correlated with the year with an adjusted R
 summary(model1bedrent)
 ```
 The following values are the predicted average rent prices for a 1 bedroom apartment in Los Angeles, CA for 2017, 2018, 2019, and 2020 respectively.
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE}
 predictAvg1bedrent
 
 # Plot the linear model
 
 plotAvg1bedrent = ggplot(df_avg_rent_1bed,aes(x=Year,y=Avg_Rent)) + geom_point() + xlim(2011,2020) +
-stat_smooth(method="lm",fullrange=TRUE)
+stat_smooth(method="lm",fullrange=TRUE) +
+ylab("Average Rent") +
+scale_x_continuous(breaks = pretty_breaks()) +
+theme_bw()
 ```
 ### Average Median Home Value Model and Prediction
 ```{r, echo=FALSE}
@@ -226,13 +264,16 @@ The average median home value is highly correlated with the year. The Adjusted R
 summary(modelHomeValue)
 ```
 Again I predicted the values for 2017 to 2020.
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE}
 predictAvgMdnHomeValue
 
 # Plot the linear model
 
 plotAvgMdnHomeValue = ggplot(df_avg_mdn_homevalue, aes(x=Year, y=Avg_Median_HomeValue)) + geom_point() + xlim(2011,2020) +    
-stat_smooth(method="lm",fullrange=TRUE)
+stat_smooth(method="lm",fullrange=TRUE) +
+ylab("Average Median Home Value") +
+scale_x_continuous(breaks = pretty_breaks()) +
+theme_bw()
 ```
 ### Monthly Mortgage Payment Model and Prediction
 ```{r, echo=FALSE}
@@ -249,74 +290,59 @@ The monthly mortgage payments were not as correlated with the year as the two pr
 summary(modelMonthlyMortgage)
 ```
 The predicted monthly mortgage payments for 2017 to 2020 are:
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE}
 predictMonthlyMortgage
 
 # Plot the linear model
 
 plotMonthlyMortgage = ggplot(df_avg_mdn_homevalue, aes(x=Year, y=Monthly_Mortgage_Payment)) + geom_point() + xlim(2011,2020) +    
-stat_smooth(method="lm",fullrange=TRUE)
+stat_smooth(method="lm",fullrange=TRUE) +
+ylab("Monthly Mortgage Payment") +
+scale_x_continuous(breaks = pretty_breaks()) +
+theme_bw()
 ```
 ### Average Monthly Wage Model and Prediction
 ```{r, echo=FALSE}
 # Average monthly wage for employees across all industries for Los Angeles County.
 # Create model with average monthly wage as the x variable and year as the y variable.
 
-modelAvgMonthlyWage = lm(avg_monthly_wage ~ year, data = df_avg_wage)
+modelAvgMonthlyWage = lm(avg_monthly_wage ~ Year, data = df_avg_wage)
 
 # Set the newdata to predict for the years 2017 to 2020 based off the model. 
-# **Note that I made another 2017 to 2020 data frame because the variable for year in the wages data has a lowercase y not uppercase.
-
-year2017to2020 = data.frame(year = c(2017,2018,2019,2020))
-predictAvgMonthlyWage = predict(modelAvgMonthlyWage, newdata = year2017to2020)
+predictAvgMonthlyWage = predict(modelAvgMonthlyWage, newdata = Year2017to2020)
 ```
 The average monthly wage is significantly correlated with the year, although not as much as rent, home value, or mortgage payments. The adjusted R-squared is .8258 and the R Value is .9087.
 ```{r, echo=FALSE}
 summary(modelAvgMonthlyWage)
 ```
 The predicted average monthly wages for 2017 to 2020 are:
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE}
 predictAvgMonthlyWage
 
 # Plot the linear model **Note that wage data starts from 2012
 
-plotAvgMonthlyWage = ggplot(df_avg_wage, aes(x=year, y=avg_monthly_wage)) + geom_point() + xlim(2012,2020) + 
-stat_smooth(method="lm",fullrange=TRUE)
+plotAvgMonthlyWage = ggplot(df_avg_wage, aes(x=Year, y=avg_monthly_wage)) + geom_point() + xlim(2010,2020) + 
+stat_smooth(method="lm",fullrange=TRUE) +
+ylab("Average Monthly Wage") +
+scale_x_continuous(breaks = c(seq(from=2012, to=2020, by=1))) +
+theme_bw()
 ```
-### Minimum Monthly Wage Model and Prediction
-
-In my project, I assume the minimum wage will be $15 an hour by 2020. I made a model and prediction for the minimum wage to see what the wage would be in 2020 according to previous data. I wanted to see how the predicted wage compared to the $15 an hour expectation.
-```{r, echo=FALSE}
-# Minimum monthly wage for Los Angeles County.
-# Create model with minimum monthly wage as the x variable and year as the y variable.
-
-modelMonthlyMinWage = lm(min_monthly_wage ~ year, data = df_min_wage)
-
-# Predict for the years 2017 to 2020 based off the model.
-
-predictMonthlyMinWage = predict(modelMonthlyMinWage, newdata = year2017to2020)
-```
-The monthly minimum wage is significantly correlated with the year, but it is the least correlated of all items. The adjusted R-squared is .7939 and the R Value is .8910. I expected this to be the case since the minimum wage does not change every year like the average wage or housing prices.
-```{r, echo=FALSE}
-summary(modelMonthlyMinWage)
-```
-The predicted monthly minimum wages for 2017 to 2020 are:
-```{r, echo=FALSE}
-predictMonthlyMinWage
-
-# Plot the linear model.
-
-plotMinMonthlyWage = ggplot(df_min_wage, aes(x=year, y=min_monthly_wage)) + geom_point() +
-stat_smooth(method="lm",fullrange=TRUE)
-```
-The model predicted the monthly minimum wage in 2020 would be 2011.455. I calculated what the hourly wage would be from this amount by dividing it by 4 and then dividing it by 40. According to the model, I found that the minimum wage in Los Angeles would be approximately $12.57 an hour by 2020 if there were no legislation raising it to $15 an hour.
+The model predicted the minimum monthly wage in 2020 would be 2011.455. I calculated what the hourly wage would be from this amount by dividing it by 4 and then dividing it by 40. According to the model, I found that the minimum wage in Los Angeles would be approximately $12.57 an hour by 2020 if there were no legislation raising it to $15 an hour.
 
 ## Data Visualization
 
 I used ggplot2 to create scatterplots with a line of best fit. The code is shown for the first plot. I used similar coding for the other items that I plotted individually against year.
 ```{r, echo=TRUE}
-plotAvg1bedrent = ggplot(df_avg_rent_1bed,aes(x=Year,y=Avg_Rent)) + geom_point() + xlim(2011,2020) +
-stat_smooth(method="lm",fullrange=TRUE)
+plotMinMonthlyWage = ggplot(df_min_wage, aes(x=Year, y=min_monthly_wage)) + geom_point() +
+stat_smooth(method="lm",fullrange=TRUE) +
+ylab("Minimum Monthly Wage") +
+scale_x_continuous(breaks = c(seq(from=1998, to=2020, by=2))) +
+theme_bw()
+```
+
+### Minimum Monthly Wage vs Year
+```{r, echo=FALSE}
+plotMinMonthlyWage
 ```
 
 ### Average 1 Bedroom Rent vs Year
@@ -339,19 +365,14 @@ plotMonthlyMortgage
 plotAvgMonthlyWage
 ```
 
-### Minimum Monthly Wage vs Year
-```{r, echo=FALSE}
-plotMinMonthlyWage
-```
-
 ### All Monthly Items vs Year (Up to 2016)
 
-Before graphing the final comparisons, I needed to combine all columns into one database that matched values against their respective years. I refined the columns in the new datbase to include only the year and the monthly dollar amounts for each item. I took out values that were recorded for beyond 2016. Also, I had to rename some of the year columns in the process because some were spelt "year" instead of "Year". Afterwards, I merged and plotted the data.  
+Before graphing the final comparisons, I needed to combine all columns into one database that matched values against their respective years. I refined the columns in the new datbase to include only the year and the monthly dollar amounts for each item. I took out values that were recorded for beyond 2016. I then merged and plotted the data.  
 ```{r, echo=FALSE}
-# I narrowed down the dataframes to new dataframes with the year and the monthly amount. While doing this I renamed all year columns to "Year"
+# I narrowed down the dataframes to new dataframes with the year and the monthly amount
 
-df_min_wage_final = data.frame(Year = df_min_wage$year, min_monthly_wage = df_min_wage$min_monthly_wage)
-df_avg_wage_final = data.frame(Year = df_avg_wage$year, avg_monthly_wage = df_avg_wage$avg_monthly_wage)
+df_min_wage_final = data.frame(Year = df_min_wage$Year, min_monthly_wage = df_min_wage$min_monthly_wage)
+df_avg_wage_final = data.frame(Year = df_avg_wage$Year, avg_monthly_wage = df_avg_wage$avg_monthly_wage)
 df_monthly_mortgage = data.frame(Year = df_avg_mdn_homevalue$Year, Monthly_Mortgage_Payment = df_avg_mdn_homevalue$Monthly_Mortgage_Payment)
 ```
 ```{r, echo=TRUE, message=FALSE}
@@ -370,7 +391,8 @@ plotAllMonthly = ggplot(df_all_monthly, aes(x = Year, y = Amount, color = Item))
       geom_line() +
       geom_point() +
       stat_smooth(fullrange = TRUE) +
-      xlim(2008,2016)
+      xlim(2008,2016) +
+      theme_bw()
 
 plotAllMonthly
 ```
@@ -402,7 +424,8 @@ plotPredictAllMonthly = ggplot(df_predict_all_monthly, aes(x = Year, y = Amount,
      geom_line() +
      geom_point() +
      stat_smooth(fullrange = TRUE) +
-xlim(2008,2020)
+     xlim(2008,2020) +
+     theme_bw()
 
 plotPredictAllMonthly
 ```
@@ -444,9 +467,9 @@ The 1 bedroom apartment rent increases by about 25.03% from 2016 to 2020 accordi
 # Make a new column for the estimated neighborhood prices in 2020.
 df_neighborhood_avg_rent = mutate(df_neighborhood_avg_rent, Avg_Rent_2020 = df_neighborhood_avg_rent$Adjusted_Rent_Sep2016*average_1br_perc_inc + df_neighborhood_avg_rent$Adjusted_Rent_Sep2016)
 ```
-My predictions from the minimum wage data showed me that a full time minimum wage employee will receive $2,400 a month. I used the neighborhood predictions to see what areas this wage would be able to afford according to a common idea which recommends the cost of a place to live should be 30% of the income. Unfortunately, there are no areas in 2020 that will be 30% of $2,400 a month earned by the minimum wage. I decided that a minimum wage earner might be willing to deal with less disposable income in order to afford their living situation. If they spent 60% of their earnings that would be $1,440. Where could they afford to live if they spent 60% of earnings on a one bedroom apartment? 
+My predictions from the minimum wage data showed me that a full time minimum wage employee will receive $2,400 a month. I used the neighborhood predictions to see which neighborhoods this wage would be able to afford according to a common idea which recommends the cost of a place to live should be 30% of the income. Unfortunately, my predicted data shows that no neighborhoods in Los Angeles will have a one bedroom rent that is 30% of the $2,400 a month earned by the minimum wage. I decided that a minimum wage earner might be willing to deal with less disposable income in order to afford their living situation. If they spent 60% of their earnings that would be $1,440. This amount would be only $1,206.87 if there was no minimum wage raise to $15 an hour for 2020 and the predicted wage of $12.57 was instead the minimum wage. Where could a minimum wage earner afford to live if they spent 60% of earnings on a one bedroom apartment, both with and without the minimum wage raise? 
 
-I wanted to compare what neighborhoods the minimum wage could afford with what the average wage could afford in Los Angeles in 2020. According to my predictions, the average wage would give a person $4,901.60 a month. If this person uses 60% of their income for housing that would mean they spend $2.940.96 a month.
+I also wanted to see what neighborhoods the average wage could afford in Los Angeles in 2020. According to my predictions, the average wage would give a person $4,901.60 a month. If this person uses 60% of their income for housing that would mean they spend $2.940.96 a month.
 
 The graph below illustrates what neighborhoods are affordable to the minimum wage earner and the average wage earner when they spend 60% of their income. The top group also shows which neighborhoods neither can afford with that 60%. The affordable neighborhoods for each group are below the horizontal lines.
 
@@ -462,18 +485,22 @@ ggplot(neighb_graph_df, aes(x = x, y = y)) +
    geom_point(aes(colour = y)) +
    geom_vline(xintercept = 11.5, colour = "grey33") +
    geom_vline(xintercept = 46.5, colour = "grey33") +
+   geom_vline(xintercept = 1.5, colour = "grey33") +
    scale_color_gradientn(colours = c("red","purple","blue"), 
                          values = c(rescale(x = c(1000, 1440, 2940, 4500))), 
                          guide = "none") +
-   annotate(geom = "text", label = "Affordable on minimum wage", 
-            x = 10.5, y = 1500, hjust = 0, 
+   annotate(geom = "text", label = "Affordable on minimum wage with $15/hr raise", 
+            x = 11, y = 1560, hjust = 0, 
             colour = "red") +
    annotate(geom = "text", label = "Affordable on average wage", 
-            x = 45.5, y = 3000, hjust = 0, 
+            x = 46, y = 2950, hjust = 0, 
             colour = "purple") +
    annotate(geom = "text", label = "Affordable to higher income earners", 
-            x = 62.5, y = 1200, hjust = 0, 
+            x = 63, y = 2500, hjust = 0, 
             colour = "blue") +
+  annotate(geom = "text", label = "Affordable on minimum wage without $15/hr raise", 
+            x = 1, y = 1200, hjust = 0, 
+            colour = "firebrick") +
    coord_flip() +
    theme_bw() +
      theme(axis.text.y=element_text(size=rel(0.7))) +
